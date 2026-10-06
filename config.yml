@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────
+#  Wanumetonomy tee time watcher — settings
+#  Edit here on GitHub, or use the "Manage watches" action
+#  (Actions tab → Manage watches → Run workflow) from your phone.
+# ─────────────────────────────────────────────────────────────
+
+# Master switch. false = paused: runs start and stop immediately.
+enabled: true
+
+# Outside the season the watcher does nothing (club is open 3/15–12/31).
+season:
+  start: "03-15"   # MM-DD
+  end: "12-31"
+
+# Only check between these hours (Eastern time).
+active_hours:
+  start: "06:00"
+  end: "22:00"
+
+# How often to look at the tee sheet while a watch is active.
+check_every_minutes: 2
+
+# Whole-day watches alert for open times before this.
+default_cutoff: "2:00 PM"
+
+# Spots needed in a tee time (4 = completely open foursome).
+party_size: 4
+
+# Times sooner than this are flagged "call the pro shop" and never auto-booked
+# (the club may not allow online booking less than 24 hours out).
+min_hours_notice: 24
+
+# Auto-book the earliest matching time the moment it opens (books a NEW tee time
+# under your name with TBD players; you cancel the old one yourself).
+auto_book: false
+
+# What to watch. One entry per date.
+#   date:   YYYY-MM-DD (required)
+#   before: only times earlier than this. Leave out for a whole-day watch:
+#           then it uses your existing booking that day, or default_cutoff.
+#   after:  optional, ignore times earlier than this (e.g. "9:00 AM")
+#   note:   anything you like, shown on the site
+watches:
+  - date: "2026-10-10"
+    note: "Have 2:39, want earlier"

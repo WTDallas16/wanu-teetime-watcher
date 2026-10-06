@@ -1,0 +1,68 @@
+name: Watch tee sheet
+
+on:
+  schedule:
+    # Every 20 min from ~6am to ~10pm Eastern (times are UTC). Each run keeps checking
+    # every `check_every_minutes` for ~25 min, so runs overlap and coverage is continuous.
+    - cron: "*/20 0-3,10-23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      TZ: America/New_York
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out status branch (site + memory of what was already sent)
+        run: |
+          if git ls-remote --exit-code --heads origin status >/dev/null; then
+            git clone --quiet --depth 1 --branch status \
+              "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" _status
+          else
+            mkdir _status && cd _status && git init -q -b status && \
+              git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -q -r requirements.txt
+
+      - name: Anything to do right now?
+        id: gate
+        run: python -m watcher.main --check-only --out _status --publish-cmd "bash scripts/publish_status.sh"
+
+      - name: Cache browser
+        if: steps.gate.outputs.active == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Install browser
+        if: steps.gate.outputs.active == 'true'
+        run: python -m playwright install --with-deps chromium
+
+      - name: Watch
+        if: steps.gate.outputs.active == 'true'
+        env:
+          CLUB_USERNAME: ${{ secrets.CLUB_USERNAME }}
+          CLUB_PASSWORD: ${{ secrets.CLUB_PASSWORD }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          CONFIG_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/config.yml
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+        run: |
+          python -m watcher.main --out _status --max-minutes 25 \
+            --publish-cmd "bash scripts/publish_status.sh"

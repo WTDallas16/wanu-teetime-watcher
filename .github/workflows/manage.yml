@@ -1,0 +1,77 @@
+name: Manage watches
+
+# Run from the GitHub app or website: Actions → Manage watches → Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do
+        type: choice
+        required: true
+        default: add watch
+        options:
+          - add watch
+          - remove watch
+          - pause
+          - resume
+          - auto-book on
+          - auto-book off
+          - clear past watches
+      date:
+        description: "Date (10/17 or 2026-10-17) — for add/remove"
+        required: false
+      before:
+        description: "Only times before (e.g. 1:30 PM). Blank = whole day: your booking that day, else the default cutoff"
+        required: false
+      after:
+        description: "Ignore times before (optional, e.g. 9:00 AM)"
+        required: false
+      note:
+        description: Note (optional)
+        required: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q PyYAML
+      - name: Update config.yml
+        id: edit
+        env:
+          ACTION: ${{ inputs.action }}
+          DATE: ${{ inputs.date }}
+          BEFORE: ${{ inputs.before }}
+          AFTER: ${{ inputs.after }}
+          NOTE: ${{ inputs.note }}
+        run: |
+          case "$ACTION" in
+            "add watch")          args=(add --date "$DATE" --before "$BEFORE" --after "$AFTER" --note "$NOTE") ;;
+            "remove watch")       args=(remove --date "$DATE") ;;
+            "pause")              args=(pause) ;;
+            "resume")             args=(resume) ;;
+            "auto-book on")       args=(autobook-on) ;;
+            "auto-book off")      args=(autobook-off) ;;
+            "clear past watches") args=(clear-past) ;;
+          esac
+          msg=$(python scripts/manage.py "${args[@]}")
+          echo "$msg" >> "$GITHUB_STEP_SUMMARY"
+          echo "msg=$msg" >> "$GITHUB_OUTPUT"
+      - name: Save
+        run: |
+          git config user.name "tee-time-watcher"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config.yml
+          git diff --cached --quiet || { git commit -q -m "${{ steps.edit.outputs.msg }}" && git push -q; }
+      - name: Start a check now
+        if: inputs.action != 'pause'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run watch.yml --ref "${{ github.ref_name }}"

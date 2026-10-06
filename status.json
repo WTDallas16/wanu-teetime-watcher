@@ -1,0 +1,27 @@
+{
+  "mode": "watching",
+  "message": "",
+  "checked_at": "2026-10-06T17:15:05-04:00",
+  "check_every_minutes": 2,
+  "auto_book": false,
+  "party_size": 4,
+  "default_cutoff": "2:00 PM",
+  "min_hours_notice": 24.0,
+  "watches": [
+    {
+      "date": "2026-10-10",
+      "label": "Sat Oct 10",
+      "note": "Have 2:39, want earlier",
+      "before": null,
+      "checked_at": "2026-10-06T17:14:31-04:00",
+      "cutoff": "2:39 PM",
+      "cutoff_source": "your current tee time",
+      "my_times": [
+        "2:39 PM"
+      ],
+      "opens_at": "",
+      "matches": [],
+      "open_after_cutoff": 13
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Tee Time Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mist: #E6ECEE;      /* bay fog */
+    --paper: #FFFFFF;
+    --ink: #1D2B45;       /* club navy */
+    --ink-2: #56627A;
+    --rule: #CBD4DA;
+    --flag: #C8342B;      /* the pin flag */
+    --fairway: #2F6B4F;
+    --held: #A57A1E;
+    --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --text: "Source Serif 4", Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --mist: #0F1724; --paper: #172236; --ink: #E8EDF4; --ink-2: #9AA7BC;
+      --rule: #2A3852; --flag: #E5574D; --fairway: #5FB38A; --held: #D9A84A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--mist); color: var(--ink);
+    font: 400 17px/1.55 var(--text);
+    padding: max(20px, env(safe-area-inset-top)) 16px 48px;
+  }
+  main { max-width: 560px; margin: 0 auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--flag); outline-offset: 3px; border-radius: 4px; }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+           padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+  .club { font: 700 30px/0.95 var(--display); letter-spacing: 0.01em; margin: 0; }
+  .club small { display: block; font: 500 17px/1.2 var(--display); color: var(--ink-2); letter-spacing: 0.02em; margin-top: 4px; }
+  .pulse { text-align: right; font: 500 15px/1.3 var(--display); color: var(--ink-2); white-space: nowrap; }
+  .pulse b { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; font-size: 17px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-2); }
+  .watching .dot { background: var(--fairway); box-shadow: 0 0 0 0 var(--fairway); animation: beat 2.4s ease-out infinite; }
+  .paused .dot, .off-season .dot { background: var(--held); }
+  .error .dot { background: var(--flag); }
+  @keyframes beat { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fairway) 60%, transparent); } 70%,100% { box-shadow: 0 0 0 8px transparent; } }
+  @media (prefers-reduced-motion: reduce) { .watching .dot { animation: none; } }
+
+  .notice { margin: 18px 0 0; padding: 12px 14px; background: var(--paper); border-left: 4px solid var(--held); font-size: 16px; }
+  .notice.bad { border-left-color: var(--flag); }
+
+  section.day { margin-top: 30px; }
+  .day h2 { font: 700 44px/1 var(--display); margin: 0; letter-spacing: -0.005em; }
+  .day .seek { margin: 6px 0 0; color: var(--ink-2); font-size: 16px; }
+  .day .seek strong { color: var(--ink); font-weight: 600; }
+  .day .note { margin: 2px 0 0; color: var(--ink-2); font-style: italic; font-size: 15px; }
+
+  /* the tee sheet itself */
+  .sheet { margin: 14px 0 0; padding: 0; list-style: none; background: var(--paper); border-top: 1px solid var(--rule); }
+  .row { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 12px;
+         min-height: 64px; padding: 8px 14px; border-bottom: 1px solid var(--rule); }
+  .t { font: 600 30px/1 var(--display); font-variant-numeric: tabular-nums; }
+  .t span { font-size: 16px; font-weight: 500; margin-left: 2px; color: var(--ink-2); }
+  .what { font-size: 15px; color: var(--ink-2); line-height: 1.35; }
+  .row.open { background: color-mix(in srgb, var(--flag) 6%, var(--paper)); }
+  .row.open .what { color: var(--ink); }
+  .row.mine .what { color: var(--ink); }
+  .row.mine { background: color-mix(in srgb, var(--ink) 5%, var(--paper)); }
+  .row.empty { grid-template-columns: 1fr; color: var(--ink-2); font-size: 15px; min-height: 56px; }
+
+  .flag { width: 14px; height: 22px; flex: none; }
+  .book {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    background: var(--flag); color: #fff; font: 600 19px/1 var(--display); letter-spacing: 0.02em;
+    padding: 12px 16px; border-radius: 3px; min-height: 44px;
+  }
+  .book:active { transform: translateY(1px); }
+  .book.call { background: var(--paper); color: var(--flag); box-shadow: inset 0 0 0 2px var(--flag); }
+
+  .facts { margin-top: 36px; padding-top: 14px; border-top: 2px solid var(--ink); font-size: 15px; color: var(--ink-2); }
+  .facts p { margin: 0 0 8px; }
+  .facts strong { color: var(--ink); font-weight: 600; }
+  nav.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  nav.controls a {
+    font: 600 17px/1 var(--display); letter-spacing: 0.02em; text-decoration: none;
+    padding: 11px 14px; border: 1.5px solid var(--ink); border-radius: 3px; min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .empty-state { margin-top: 30px; background: var(--paper); padding: 20px 18px; }
+  .empty-state h2 { font: 700 30px/1.05 var(--display); margin: 0 0 6px; }
+  .empty-state p { margin: 0; color: var(--ink-2); }
+  @media (max-width: 380px) {
+    .row { grid-template-columns: 78px 1fr; }
+    .row .book { grid-column: 1 / -1; justify-content: center; }
+    .day h2 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 class="club">Tee Time Watch<small>Wanumetonomy Golf &amp; Country Club</small></h1>
+    <div class="pulse" id="pulse" aria-live="polite"><b><i class="dot"></i><span id="mode">Loading</span></b><div id="ago"></div></div>
+  </header>
+  <div id="notice"></div>
+  <div id="days"></div>
+  <div class="facts" id="facts" hidden></div>
+</main>
+
+<template id="flag-svg"><svg class="flag" viewBox="0 0 14 22" aria-hidden="true"><path d="M2 1v20" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 1.5l10 4.2L3 10z" fill="currentColor"/></svg></template>
+
+<script>
+const CLUB_SIGNIN = "https://wanumetonomy.com/login";
+const TEE_SHEET = "https://wanumetonomy.com/Default.aspx?p=dynamicmodule&pageid=21&tt=booking&ssid=100067&vnf=1";
+
+// Work out the GitHub repo from the Pages address (owner.github.io/repo/).
+function repoUrl() {
+  const owner = location.hostname.split(".")[0];
+  const repo = location.pathname.split("/").filter(Boolean)[0];
+  return location.hostname.endsWith("github.io") && repo ? `https://github.com/${owner}/${repo}` : null;
+}
+
+const $ = (s) => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+function splitTime(t) { const m = /^(\d{1,2}:\d{2})\s*([AP]M)$/i.exec(t || ""); return m ? [m[1], m[2]] : [t, ""]; }
+function timeCell(t) { const [hm, ap] = splitTime(t); const d = el("div", "t", hm); d.append(el("span", null, ap)); return d; }
+function ago(iso) {
+  const mins = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const h = Math.floor(mins / 60);
+  return h < 24 ? `${h} hr ago` : new Date(iso).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" });
+}
+function hoursUntil(dateStr, t) {
+  const [hm, ap] = splitTime(t); let [h, m] = hm.split(":").map(Number);
+  if (ap.toUpperCase() === "PM" && h !== 12) h += 12; if (ap.toUpperCase() === "AM" && h === 12) h = 0;
+  const [y, mo, d] = dateStr.split("-").map(Number);
+  return (new Date(y, mo - 1, d, h, m) - Date.now()) / 3.6e6;
+}
+
+const MODES = {
+  watching: "Watching",
+  idle: "Resting",
+  paused: "Paused",
+  "off-season": "Off-season",
+  error: "Needs attention",
+};
+
+function render(s) {
+  const pulse = $("#pulse");
+  pulse.className = "pulse " + s.mode;
+  $("#mode").textContent = MODES[s.mode] || s.mode;
+  $("#ago").textContent = s.checked_at ? `checked ${ago(s.checked_at)}` : "";
+
+  const notice = $("#notice"); notice.replaceChildren();
+  const say = (text, bad) => notice.append(el("p", "notice" + (bad ? " bad" : ""), text));
+  if (s.mode === "paused") say("Paused. Nothing is being checked until you resume it.");
+  if (s.mode === "off-season") say("The course is closed for the season. Checking resumes automatically on opening day.");
+  if (s.mode === "error") say(s.message || "The last check failed.", true);
+  if (s.mode === "idle" && s.message === "outside active hours") say("Resting overnight. Checks pick up again in the morning.");
+  if (s.checked_at && s.mode === "watching" && (Date.now() - new Date(s.checked_at)) > 45 * 60000)
+    say("No check in the last 45 minutes. GitHub may be running late, or the watcher stopped. Open the Actions tab to see why.", true);
+
+  const days = $("#days"); days.replaceChildren();
+  const watches = (s.watches || []).filter(w => w.date >= new Date().toISOString().slice(0, 10) || w.matches);
+  if (!watches.length) {
+    const box = el("div", "empty-state");
+    box.append(el("h2", null, "No dates being watched"));
+    box.append(el("p", null, "Add a date below and you'll get a push notification when an earlier tee time opens up."));
+    days.append(box);
+  }
+
+  for (const w of watches) {
+    const sec = el("section", "day");
+    sec.append(el("h2", null, w.label || w.date));
+    const seek = el("p", "seek");
+    if (w.cutoff) {
+      seek.append(`Looking for ${s.party_size === 4 ? "an open foursome" : `${s.party_size} open spots`} before `);
+      seek.append(el("strong", null, w.cutoff));
+      seek.append(w.cutoff_source === "your current tee time" ? ", your current tee time." :
+                  w.cutoff_source === "your target time" ? "." : ", the default cutoff.");
+    } else if (w.error) {
+      seek.append("Couldn't read this day on the last check. It'll try again.");
+    } else {
+      seek.append("Waiting for the first check.");
+    }
+    sec.append(seek);
+    if (w.note) sec.append(el("p", "note", w.note));
+
+    const ul = el("ul", "sheet");
+    const rows = [];
+    for (const m of w.matches || []) rows.push({ kind: "open", t: m.time, m });
+    for (const t of w.my_times || []) rows.push({ kind: "mine", t });
+    rows.sort((a, b) => hoursUntil(w.date, a.t) - hoursUntil(w.date, b.t));
+
+    for (const r of rows) {
+      const li = el("li", "row " + r.kind);
+      li.append(timeCell(r.t));
+      if (r.kind === "mine") {
+        li.append(el("div", "what", "Your tee time"));
+        li.append(el("span"));
+      } else {
+        const callShop = r.m.call_shop || hoursUntil(w.date, r.t) < (s.min_hours_notice ?? 24);
+        li.append(el("div", "what", callShop ? "Under 24 hours out: book by phone" : (s.party_size === 4 ? "Open foursome" : "Open")));
+        const a = el("a", "book" + (callShop ? " call" : ""));
+        a.append(document.getElementById("flag-svg").content.cloneNode(true));
+        a.append(callShop ? "Call shop" : "Book");
+        a.setAttribute("aria-label", callShop ? `Call the pro shop about ${r.t}` : `Book ${r.t}`);
+        a.href = callShop ? "tel:+14018475141" : r.m.book_url;
+        if (!callShop) { a.target = "_blank"; a.rel = "noopener"; }
+        li.append(a);
+      }
+      ul.append(li);
+    }
+    if (!(w.matches || []).length && w.cutoff) {
+      const li = el("li", "row empty");
+      li.textContent = w.opens_at ? `Online booking for this day opens ${w.opens_at}.` :
+        "Nothing earlier is open yet. You'll get a notification the moment one is.";
+      ul.prepend(li);
+    }
+    sec.append(ul);
+    days.append(sec);
+  }
+
+  const facts = $("#facts"); facts.hidden = false; facts.replaceChildren();
+  const p1 = el("p");
+  p1.append("Checks every ", el("strong", null, `${s.check_every_minutes} min`), " from 6 AM to 10 PM. Auto-book is ",
+            el("strong", null, s.auto_book ? "on" : "off"), s.auto_book ? ": the earliest match is booked for you with TBD players." : ".");
+  facts.append(p1);
+  const p2 = el("p");
+  p2.append("Book buttons open the club's own booking form, which holds the time for about 10 minutes. You need to be ");
+  const si = el("a", null, "signed in to the club site"); si.href = CLUB_SIGNIN; si.target = "_blank"; si.rel = "noopener";
+  p2.append(si, " in this browser first.");
+  facts.append(p2);
+
+  const repo = repoUrl();
+  const nav = el("nav", "controls"); nav.setAttribute("aria-label", "Controls");
+  const link = (text, href) => { const a = el("a", null, text); a.href = href; a.target = "_blank"; a.rel = "noopener"; nav.append(a); };
+  link("Open tee sheet", TEE_SHEET);
+  if (repo) {
+    link("Add or remove a date", `${repo}/actions/workflows/manage.yml`);
+    link("Settings", `${repo}/edit/main/config.yml`);
+  }
+  facts.append(nav);
+}
+
+async function load() {
+  try {
+    const r = await fetch(`status.json?t=${Date.now()}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    render(await r.json());
+  } catch (e) {
+    $("#mode").textContent = "No data yet";
+    $("#notice").replaceChildren(el("p", "notice", "The watcher hasn't published a status yet. It appears here after its first run."));
+  }
+}
+load();
+setInterval(load, 60000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+</script>
+</body>
+</html>

@@ -43,3 +43,5 @@ auto_book: false
 watches:
   - date: "2026-10-10"
     note: "Have 2:39, want earlier"
+  - date: "2026-10-11"
+    before: "2:30 PM"

@@ -1,7 +1,7 @@
 {
-  "mode": "idle",
-  "message": "outside active hours",
-  "checked_at": "2026-10-07T22:04:11-04:00",
+  "mode": "watching",
+  "message": "",
+  "checked_at": "2026-10-08T13:18:21-04:00",
   "check_every_minutes": 2,
   "auto_book": false,
   "party_size": 4,
@@ -13,7 +13,7 @@
       "label": "Sat Oct 10",
       "note": "Have 2:39, want earlier",
       "before": null,
-      "checked_at": "2026-10-07T18:38:14-04:00",
+      "checked_at": "2026-10-08T13:17:17-04:00",
       "cutoff": "2:39 PM",
       "cutoff_source": "your current tee time",
       "my_times": [
@@ -21,20 +21,20 @@
       ],
       "opens_at": "",
       "matches": [],
-      "open_after_cutoff": 13
+      "open_after_cutoff": 11
     },
     {
       "date": "2026-10-11",
       "label": "Sun Oct 11",
       "note": "",
       "before": "2:30 PM",
-      "checked_at": "2026-10-07T18:38:14-04:00",
+      "checked_at": "2026-10-08T13:17:17-04:00",
       "cutoff": "2:30 PM",
       "cutoff_source": "your target time",
       "my_times": [],
       "opens_at": "",
       "matches": [],
-      "open_after_cutoff": 18
+      "open_after_cutoff": 17
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "mode": "watching",
   "message": "",
-  "checked_at": "2026-10-09T13:16:18-04:00",
+  "checked_at": "2026-10-09T17:31:58-04:00",
   "check_every_minutes": 2,
   "auto_book": false,
   "party_size": 4,
@@ -13,27 +13,34 @@
       "label": "Sat Oct 10",
       "note": "Have 2:39, want earlier",
       "before": null,
-      "checked_at": "2026-10-09T13:15:17-04:00",
-      "cutoff": "2:21 PM",
+      "checked_at": "2026-10-09T17:30:54-04:00",
+      "cutoff": "12:33 PM",
       "cutoff_source": "your current tee time",
       "my_times": [
-        "2:21 PM"
+        "12:33 PM"
       ],
       "opens_at": "",
       "matches": [],
-      "open_after_cutoff": 12
+      "open_after_cutoff": 13
     },
     {
       "date": "2026-10-11",
       "label": "Sun Oct 11",
       "note": "",
       "before": "2:30 PM",
-      "checked_at": "2026-10-09T13:15:17-04:00",
+      "checked_at": "2026-10-09T17:30:54-04:00",
       "cutoff": "2:30 PM",
       "cutoff_source": "your target time",
       "my_times": [],
       "opens_at": "",
-      "matches": [],
+      "matches": [
+        {
+          "time": "2:03 PM",
+          "spots": 4,
+          "call_shop": false,
+          "book_url": "https://wanumetonomy.com/default.aspx?p=NetcaddyPop&tt=MakeTeeTime&NoModResize=1&NoNav=1&ShowFooter=False&courseid=1&date=10/11/2026&time=2:03%20PM&hole=1&numholes=0&xsome=4&startletter="
+        }
+      ],
       "open_after_cutoff": 17
     }
   ]

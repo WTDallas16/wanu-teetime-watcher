@@ -1,7 +1,7 @@
 {
   "mode": "watching",
   "message": "",
-  "checked_at": "2026-10-09T21:15:59-04:00",
+  "checked_at": "2026-10-09T21:37:55-04:00",
   "check_every_minutes": 2,
   "auto_book": false,
   "party_size": 4,
@@ -13,7 +13,7 @@
       "label": "Sat Oct 10",
       "note": "Have 2:39, want earlier",
       "before": null,
-      "checked_at": "2026-10-09T21:14:55-04:00",
+      "checked_at": "2026-10-09T21:36:55-04:00",
       "cutoff": "12:33 PM",
       "cutoff_source": "your current tee time",
       "my_times": [
@@ -28,7 +28,7 @@
       "label": "Sun Oct 11",
       "note": "",
       "before": "2:30 PM",
-      "checked_at": "2026-10-09T21:14:55-04:00",
+      "checked_at": "2026-10-09T21:36:55-04:00",
       "cutoff": "2:30 PM",
       "cutoff_source": "your target time",
       "my_times": [],

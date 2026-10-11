@@ -1,7 +1,7 @@
 {
   "mode": "watching",
   "message": "",
-  "checked_at": "2026-10-11T12:12:33-04:00",
+  "checked_at": "2026-10-11T12:34:30-04:00",
   "check_every_minutes": 2,
   "auto_book": false,
   "party_size": 4,
@@ -13,7 +13,7 @@
       "label": "Sun Oct 11",
       "note": "",
       "before": "2:30 PM",
-      "checked_at": "2026-10-11T12:11:59-04:00",
+      "checked_at": "2026-10-11T12:33:59-04:00",
       "cutoff": "2:30 PM",
       "cutoff_source": "your target time",
       "my_times": [],

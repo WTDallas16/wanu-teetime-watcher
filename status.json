@@ -1,7 +1,7 @@
 {
-  "mode": "watching",
-  "message": "",
-  "checked_at": "2026-10-10T19:44:03-04:00",
+  "mode": "idle",
+  "message": "outside active hours",
+  "checked_at": "2026-10-10T22:10:12-04:00",
   "check_every_minutes": 2,
   "auto_book": false,
   "party_size": 4,
